@@ -75,7 +75,7 @@ const Avatar = styled.div`
   height: 28px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.white};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,15 +88,22 @@ const ActionLink = styled(Link)`
   text-align: center;
   padding: 14px;
   background: ${({ theme }) => theme.colors.primary};
-  color: white;
+  color: ${({ theme }) => theme.colors.white};
   border-radius: ${({ theme }) => theme.borderRadius.button};
   text-decoration: none;
   font-weight: 600;
   margin-top: 16px;
 `;
 
+const SectionTitle = styled.p`
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
 const TABS = ["概要", "会計", "食材", "写真", "評価"] as const;
-const TAB_PATHS: Record<string, string> = {
+type NonOverviewTab = Exclude<typeof TABS[number], "概要">;
+const TAB_PATHS: Record<NonOverviewTab, string> = {
   会計: "expenses",
   食材: "ingredients",
   写真: "photos",
@@ -150,9 +157,7 @@ export default function EventDetailClient({
       <Content>
         {activeTab === "概要" && (
           <div>
-            <p style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>
-              参加者
-            </p>
+            <SectionTitle>参加者</SectionTitle>
             <div>
               {participants.map((p) => (
                 <ParticipantChip key={p.id}>
