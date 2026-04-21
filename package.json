@@ -1,0 +1,39 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "generate:types": "openapi-typescript ../otter-event-api/docs/openapi.yaml -o lib/types.ts"
+  },
+  "dependencies": {
+    "next": "16.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "styled-components": "^6.4.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.29.2",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-jest": "^30.3.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5"
+  }
+}
