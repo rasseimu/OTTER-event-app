@@ -23,7 +23,6 @@ export default async function EventDetailPage({
     <EventDetailClient
       event={eventData.event}
       participants={participantsData.participants}
-      token={token}
     />
   );
 }

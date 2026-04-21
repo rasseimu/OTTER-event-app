@@ -73,6 +73,12 @@ const EmptyText = styled.p`
   font-size: 14px;
 `;
 
+const MetaText = styled.p`
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
 const THUMB_COLORS = ["#E8D5FF", "#FFD5D5", "#FFE9B8", "#D5F5D5"];
 
 export default function HomeClient({
@@ -114,9 +120,9 @@ export default function HomeClient({
                 <Thumb $color={THUMB_COLORS[i % THUMB_COLORS.length]} />
                 <div>
                   <p style={{ margin: 0, fontWeight: 600, fontSize: 15 }}>{e.name}</p>
-                  <p style={{ margin: "2px 0 0", fontSize: 12, color: "#888" }}>
+                  <MetaText>
                     {e.date} · {e.participant_count}人
-                  </p>
+                  </MetaText>
                 </div>
               </PastCard>
             ))

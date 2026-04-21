@@ -120,11 +120,9 @@ const EVENT_ICONS: Record<string, string> = {
 export default function EventDetailClient({
   event,
   participants,
-  token: _token,
 }: {
   event: EventItem;
   participants: UserItem[];
-  token: string;
 }) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("概要");
 

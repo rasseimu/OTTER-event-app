@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import EventTypeSelector from "@/components/EventTypeSelector";
-import { api, CreateEventInput } from "@/lib/api";
+import { createEvent } from "@/app/actions/events";
+import type { CreateEventInput } from "@/lib/api";
 
 const Page = styled.div`
   background: ${({ theme }) => theme.colors.background};
@@ -81,13 +82,8 @@ export default function CreateEventPage() {
     if (!name || !date) return;
     setLoading(true);
     try {
-      const cookieRes = await fetch("/api/auth/token");
-      const { token } = await cookieRes.json();
-      const { event } = await api.events.create(
-        { name, event_type: type, date, time, location },
-        token
-      );
-      router.push(`/events/${event.id}`);
+      const { id } = await createEvent({ name, event_type: type, date, time, location });
+      router.push(`/events/${id}`);
     } catch {
       alert("イベントの作成に失敗しました");
     } finally {

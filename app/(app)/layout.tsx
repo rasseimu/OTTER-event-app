@@ -1,4 +1,4 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 import styled from "styled-components";
@@ -21,13 +21,10 @@ export default async function AppLayout({
   const token = cookieStore.get("token");
   if (!token) redirect("/login");
 
-  const headersList = await headers();
-  const pathname = headersList.get("x-invoke-path") ?? headersList.get("x-pathname") ?? "/";
-
   return (
     <PageWrapper>
       {children}
-      <BottomNav activePath={pathname} />
+      <BottomNav />
     </PageWrapper>
   );
 }

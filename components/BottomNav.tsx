@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import styled from "styled-components";
 
 const Nav = styled.nav`
@@ -42,11 +43,12 @@ const ITEMS = [
   { href: "/recipes",  icon: "📖", label: "レシピ" },
 ] as const;
 
-export default function BottomNav({ activePath }: { activePath: string }) {
+export default function BottomNav() {
+  const pathname = usePathname();
   return (
     <Nav>
       {ITEMS.map(({ href, icon, label }) => (
-        <NavItem key={href} href={href} $active={activePath === href}>
+        <NavItem key={href} href={href} $active={pathname === href}>
           <Icon>{icon}</Icon>
           {label}
         </NavItem>
