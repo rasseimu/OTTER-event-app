@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { middleware } from "@/middleware";
+import { proxy as middleware } from "@/proxy";
 import { NextRequest } from "next/server";
 
 function makeRequest(path: string, token?: string) {
