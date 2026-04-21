@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies as getCookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { api } from "@/lib/api";
 import styled from "styled-components";
@@ -29,7 +29,7 @@ const AvatarCircle = styled.div`
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: ${({ theme }) => theme.colors.avatarOverlay};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,13 +115,20 @@ const Chevron = styled.span`
 const LogoutButton = styled.button`
   background: none;
   border: none;
-  color: #e53935;
+  color: ${({ theme }) => theme.colors.danger};
   font-size: 15px;
   cursor: pointer;
 `;
 
+async function logout() {
+  "use server";
+  const cookieStore = await getCookies();
+  cookieStore.delete("token");
+  redirect("/login");
+}
+
 export default async function ProfilePage() {
-  const cookieStore = await cookies();
+  const cookieStore = await getCookies();
   const raw = cookieStore.get("token");
   if (!raw) redirect("/login");
   const token = raw.value;
@@ -133,7 +140,7 @@ export default async function ProfilePage() {
       <PageTitle>マイページ</PageTitle>
 
       <ProfileCard>
-        <AvatarCircle>👤</AvatarCircle>
+        <AvatarCircle>{user.name.charAt(0)}</AvatarCircle>
         <UserName>{user.name}</UserName>
         <Role>研究室メンバー</Role>
         <Stats>
@@ -165,7 +172,7 @@ export default async function ProfilePage() {
 
       <InfoCard>
         <InfoRow>
-          <form action="/api/auth" method="DELETE" style={{ width: "100%", textAlign: "center" }}>
+          <form action={logout} style={{ width: "100%", textAlign: "center" }}>
             <LogoutButton type="submit">→ ログアウト</LogoutButton>
           </form>
         </InfoRow>

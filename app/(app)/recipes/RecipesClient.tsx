@@ -62,11 +62,19 @@ const RecipeCard = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.card};
 `;
 
-const Thumb = styled.div<{ $color: string }>`
+const Thumb = styled.div<{ $type: string }>`
   width: 56px;
   height: 56px;
   border-radius: 10px;
-  background: ${({ $color }) => $color};
+  background: ${({ $type, theme }) => {
+    const map: Record<string, string> = {
+      drinking: theme.colors.categoryDrinking,
+      bbq: theme.colors.categoryBbq,
+      cooking: theme.colors.categoryCooking,
+      other: theme.colors.categoryOther,
+    };
+    return map[$type] ?? theme.colors.border;
+  }};
   flex-shrink: 0;
 `;
 
@@ -86,33 +94,30 @@ const ChevronText = styled.span`
   color: ${({ theme }) => theme.colors.border};
 `;
 
-const THUMB_COLORS: Record<string, string> = {
-  drinking: "#E8D5FF",
-  bbq: "#FFD5D5",
-  cooking: "#FFE9B8",
-  other: "#D5F5D5",
-};
-
 const DIFFICULTY_LABELS: Record<string, string> = {
   easy: "簡単",
   medium: "普通",
   hard: "難しい",
 };
 
-const CATEGORIES = [
-  { label: "すべて" },
-  { label: "たこ焼き" },
-  { label: "鍋" },
-  { label: "餃子" },
+const CATEGORIES: { label: string; eventType: string | undefined }[] = [
+  { label: "すべて", eventType: undefined },
+  { label: "料理", eventType: "cooking" },
+  { label: "BBQ", eventType: "bbq" },
+  { label: "飲み会", eventType: "drinking" },
+  { label: "その他", eventType: "other" },
 ];
 
 export default function RecipesClient({ recipes }: { recipes: RecipeItem[] }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(0);
 
-  const filtered = recipes.filter((r) =>
-    r.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = recipes.filter((r) => {
+    const matchesSearch = r.name.toLowerCase().includes(search.toLowerCase());
+    const selectedEventType = CATEGORIES[activeCategory].eventType;
+    const matchesCategory = !selectedEventType || r.event_type === selectedEventType;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <Page>
@@ -126,18 +131,18 @@ export default function RecipesClient({ recipes }: { recipes: RecipeItem[] }) {
       </SearchBarWrapper>
       <CategoryRow>
         {CATEGORIES.map((c, i) => (
-          <CategoryChip key={i} $active={activeCategory === i} onClick={() => setActiveCategory(i)}>
+          <CategoryChip key={c.label} $active={activeCategory === i} onClick={() => setActiveCategory(i)}>
             {c.label}
           </CategoryChip>
         ))}
       </CategoryRow>
       {filtered.map((r) => (
         <RecipeCard key={r.id}>
-          <Thumb $color={THUMB_COLORS[r.event_type] ?? "#EEE"} />
+          <Thumb $type={r.event_type} />
           <div style={{ flex: 1 }}>
             <RecipeName>{r.name}</RecipeName>
             <RecipeMeta>
-              ⏱ {r.cook_time_minutes}分 · 👥 {r.serves}人 · {DIFFICULTY_LABELS[r.difficulty] ?? r.difficulty}
+              ⏱ {r.cook_time_minutes ?? "—"}分 · 👥 {r.serves ?? "—"}人 · {DIFFICULTY_LABELS[r.difficulty] ?? r.difficulty}
             </RecipeMeta>
           </div>
           <ChevronText>›</ChevronText>

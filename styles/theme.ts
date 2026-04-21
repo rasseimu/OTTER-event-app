@@ -9,6 +9,12 @@ export const theme = {
     border:         "#EEEEEE",
     star:           "#FFC107",
     success:        "#4CAF50",
+    danger:         "#e53935",
+    avatarOverlay:  "rgba(255, 255, 255, 0.3)",
+    categoryDrinking: "#E8D5FF",
+    categoryBbq:    "#FFD5D5",
+    categoryCooking: "#FFE9B8",
+    categoryOther:  "#D5F5D5",
   },
   borderRadius: {
     card:   "12px",
