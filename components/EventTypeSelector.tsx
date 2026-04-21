@@ -1,6 +1,7 @@
 "use client";
 
 import styled from "styled-components";
+import type { CreateEventInput } from "@/lib/api";
 
 const Grid = styled.div`
   display: grid;
@@ -27,7 +28,7 @@ const Emoji = styled.span`
   font-size: 26px;
 `;
 
-const TYPES = [
+const TYPES: { value: CreateEventInput["event_type"]; label: string; emoji: string }[] = [
   { value: "drinking", label: "飲み会", emoji: "🍺" },
   { value: "bbq",      label: "BBQ",    emoji: "🍖" },
   { value: "cooking",  label: "料理",   emoji: "🍳" },
@@ -39,7 +40,7 @@ export default function EventTypeSelector({
   onChange,
 }: {
   value: string;
-  onChange: (v: string) => void;
+  onChange: (v: CreateEventInput["event_type"]) => void;
 }) {
   return (
     <Grid>

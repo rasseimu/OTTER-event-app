@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import EventTypeSelector from "@/components/EventTypeSelector";
-import { api } from "@/lib/api";
-
-type EventType = "drinking" | "bbq" | "cooking" | "other";
+import { api, CreateEventInput } from "@/lib/api";
 
 const Page = styled.div`
   background: ${({ theme }) => theme.colors.background};
@@ -64,10 +62,16 @@ const SectionTitle = styled.p`
   margin: 0 16px 8px;
 `;
 
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  margin: 12px 0;
+`;
+
 export default function CreateEventPage() {
   const router = useRouter();
   const [name, setName]         = useState("");
-  const [type, setType]         = useState<EventType>("drinking");
+  const [type, setType]         = useState<CreateEventInput["event_type"]>("drinking");
   const [date, setDate]         = useState("");
   const [time, setTime]         = useState("");
   const [location, setLocation] = useState("");
@@ -112,13 +116,13 @@ export default function CreateEventPage() {
 
       <SectionTitle>イベントタイプ</SectionTitle>
       <div style={{ padding: "0 16px" }}>
-        <EventTypeSelector value={type} onChange={(v) => setType(v as EventType)} />
+        <EventTypeSelector value={type} onChange={(v) => setType(v)} />
       </div>
 
       <Card style={{ marginTop: 16 }}>
         <Label>📅 日時</Label>
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-        <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "12px 0" }} />
+        <Divider />
         <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
       </Card>
 
