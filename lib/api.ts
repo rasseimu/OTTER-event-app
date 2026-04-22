@@ -58,6 +58,12 @@ export const api = {
         body: JSON.stringify({ user_id: userId }),
         token,
       }),
+    bulkCreate: (eventId: number, userIds: number[], token: string) =>
+      apiFetch<unknown>(`/events/${eventId}/participants/bulk_create`, {
+        method: "POST",
+        body: JSON.stringify({ user_ids: userIds }),
+        token,
+      }),
   },
 
   expenses: {
@@ -135,6 +141,8 @@ export const api = {
         body: JSON.stringify({ user: data }),
         token,
       }),
+    search: (q: string, token: string) =>
+      apiFetch<{ users: UserItem[] }>(`/users/search?q=${encodeURIComponent(q)}`, { token }),
   },
 
   discover: {

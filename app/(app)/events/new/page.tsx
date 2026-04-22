@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import EventTypeSelector from "@/components/EventTypeSelector";
-import { createEvent } from "@/app/actions/events";
-import type { CreateEventInput } from "@/lib/api";
+import { createEvent, bulkAddParticipants } from "@/app/actions/events";
+import ParticipantSheet from "@/components/ParticipantSheet";
+import type { CreateEventInput, UserItem } from "@/lib/api";
 
 const Page = styled.div`
   background: ${({ theme }) => theme.colors.background};
@@ -69,20 +70,57 @@ const Divider = styled.hr`
   margin: 12px 0;
 `;
 
+const CardHeader = styled.div`
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+`;
+
+const AddBtn = styled.button`
+  background: none; border: none;
+  font-size: 14px; color: ${({ theme }) => theme.colors.primary};
+  font-weight: 600; cursor: pointer; padding: 0;
+`;
+
+const ParticipantChip = styled.div`
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0;
+`;
+
+const ChipAvatar = styled.div`
+  width: 32px; height: 32px; border-radius: 50%;
+  background: ${({ theme }) => theme.colors.border};
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; flex-shrink: 0;
+`;
+
+const ChipName = styled.span`
+  font-size: 15px; color: ${({ theme }) => theme.colors.text};
+`;
+
+const EmptyText = styled.p`
+  font-size: 14px; color: ${({ theme }) => theme.colors.textSecondary};
+  margin: 0;
+`;
+
 export default function CreateEventPage() {
   const router = useRouter();
-  const [name, setName]         = useState("");
-  const [type, setType]         = useState<CreateEventInput["event_type"]>("drinking");
-  const [date, setDate]         = useState("");
-  const [time, setTime]         = useState("");
+  const [name, setName] = useState("");
+  const [type, setType] = useState<CreateEventInput["event_type"]>("drinking");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [participants, setParticipants] = useState<UserItem[]>([]);
+  const [showSheet, setShowSheet] = useState(false);
 
   async function handleCreate() {
     if (!name || !date) return;
     setLoading(true);
     try {
       const { id } = await createEvent({ name, event_type: type, date, time, location });
+      if (participants.length > 0) {
+        await bulkAddParticipants(id, participants.map((u) => u.id));
+      }
       router.push(`/events/${id}`);
     } catch {
       alert("イベントの作成に失敗しました");
@@ -130,6 +168,30 @@ export default function CreateEventPage() {
           onChange={(e) => setLocation(e.target.value)}
         />
       </Card>
+      <Card>
+        <CardHeader>
+          <Label style={{ margin: 0 }}>👤 参加者</Label>
+          <AddBtn onClick={() => setShowSheet(true)}>追加</AddBtn>
+        </CardHeader>
+        {participants.length === 0 ? (
+          <EmptyText>参加者がいません</EmptyText>
+        ) : (
+          participants.map((u) => (
+            <ParticipantChip key={u.id}>
+              <ChipAvatar>{u.name.charAt(0).toUpperCase()}</ChipAvatar>
+              <ChipName>{u.name}</ChipName>
+            </ParticipantChip>
+          ))
+        )}
+      </Card>
+
+      {showSheet && (
+        <ParticipantSheet
+          initialSelected={participants}
+          onConfirm={(selected) => { setParticipants(selected); setShowSheet(false); }}
+          onClose={() => setShowSheet(false)}
+        />
+      )}
     </Page>
   );
 }
